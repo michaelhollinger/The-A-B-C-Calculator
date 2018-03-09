@@ -27,12 +27,12 @@ public class calc
 	//stores a given index of the queue during BFS.
 	public static class result
 	{
-		int num, steps;
+		int num, dist;
 
 		result(int a, int b)
 		{
 			num = a;
-			steps = b;
+			dist = b;
 		}
 	}
 
@@ -68,22 +68,27 @@ public class calc
 			//prevents duplicates.
 			boolean[] seen = new boolean[1000000];
 			Arrays.fill(seen, false);
+
+			//stores the distance of each node. Initially filled with sentinel value of 0.
+			int[] distance = new int[1000000];
+			Arrays.fill(distance, 0);
 			
 			//flag to denote whether or not a solution exists.
 			boolean found = false;
-
 
 			while(queue.size() != 0)
 			{
 				//returns null if head of queue is empty so that no exception is thrown.
 				result curResult = queue.poll();
+				
 				int curNum = curResult.num;
+				int curDist = curResult.dist + 1;
 
-				//if the solution exists, assert the flag and print out its steps, respectively.
+				//if the solution exists, assert the flag and print out its dist, respectively.
 				if(curNum == curProblem.target)
 				{
 					found = true;
-					System.out.println(curResult.steps);
+					System.out.println(distance[curNum]);
 				}
 
 				//initialize the three possible states branching from a given node.
@@ -95,19 +100,22 @@ public class calc
 				if(!seen[addNum])
 				{
 					seen[addNum] = true;
-					queue.add(new result(addNum, curResult.steps + 1));
+					queue.add(new result(addNum, curDist));
+					distance[addNum] = curDist;
 				}
 
 				if(!seen[mulNum])
 				{
 					seen[mulNum] = true;
-					queue.add(new result(mulNum, curResult.steps + 1));
+					queue.add(new result(mulNum, curDist));
+					distance[mulNum] = curDist;
 				}
-
+   
 				if(!seen[divNum])
 				{
 					seen[divNum] = true;
-					queue.add(new result(divNum, curResult.steps + 1));
+					queue.add(new result(divNum, curDist));
+					distance[divNum] = curDist;
 				}
 			}
 
